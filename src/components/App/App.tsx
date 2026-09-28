@@ -5,7 +5,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tansta
 import { useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
 import { Pagination } from "../Pagination/Pagination"
-import { SearchBox } from "../SearchBox.module.css/SearchBox"
+import { SearchBox } from "../SearchBox/SearchBox"
 import { NoteList } from "../NoteList/NoteList"
 const App = () => {
 
