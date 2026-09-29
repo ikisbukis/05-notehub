@@ -1,12 +1,13 @@
-import { Modal } from "../Modal/Modal"
 import css from "./NoteForm.module.css"
-import { Field, Formik, Form, type FormikHelpers } from "formik"
+import { Field, Formik, Form, type FormikHelpers, ErrorMessage  } from "formik"
 import * as Yup from "yup";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { createNote } from "../../services/noteService";
 
 interface NoteFormValues{
     title: string
     content: string
-    tag: string
+    tag: "Todo" | "Work" | "Personal" | "Meeting" | "Shopping" ;
 }
 
 const InitialValues : NoteFormValues = {
@@ -16,34 +17,44 @@ const InitialValues : NoteFormValues = {
 }
 
 const Schema = Yup.object().shape({
-  title: Yup.string().required("Username is required"),
-  content: Yup.string().required("Content is required"),
-  tag: Yup.string().required("Tag is required")
+  title: Yup.string().min(3, "Minimum 3 characters").max(50, "Maximum 50 characters").required("Title is required"),
+  content: Yup.string().max(500, "Maximum 500 characters"),
+  tag: Yup.string().oneOf(["Todo", "Work", "Personal", "Meeting", "Shopping"], "Invalid tag").required("Tag is required")
 });
 
 interface NoteFormProps{
-  handleOnForm: (isForm: boolean) => void
-  onSubmit: (values: NoteFormValues) => void
+  onClose: () => void
 }
 
-export const NoteForm = ({handleOnForm, onSubmit} : NoteFormProps) => {
+export const NoteForm = ({onClose} : NoteFormProps) => {
+
+    const queryClient = useQueryClient();
+
+    const mutationCreate = useMutation({
+          mutationFn: createNote,
+          onSuccess: () => {
+              queryClient.invalidateQueries({
+                queryKey:["notes"]
+              })
+              onClose()
+          }
+        })
 
     const handleSubmit = (
         values: NoteFormValues, 
         action: FormikHelpers<NoteFormValues>
     ) => {
-        onSubmit(values)
+        mutationCreate.mutate(values)
         action.resetForm() 
     }
 
      return (
         <Formik initialValues={InitialValues} onSubmit={handleSubmit} validationSchema={Schema}>
-    <Modal>
     <Form className={css.form}>
   <div className={css.formGroup}>
     <label htmlFor="title">Title</label>
     <Field id="title" type="text" name="title" className={css.input} />
-    <span id="title-error" className={css.error} />
+    <ErrorMessage  name="title" component="span" className={css.error} />
   </div>
 
   <div className={css.formGroup}>
@@ -55,7 +66,7 @@ export const NoteForm = ({handleOnForm, onSubmit} : NoteFormProps) => {
       rows={8}
       className={css.textarea}
     />
-    <span id="content-error" className={css.error} />
+    <ErrorMessage name="content" component="span" className={css.error} />
   </div>
 
   <div className={css.formGroup}>
@@ -67,11 +78,11 @@ export const NoteForm = ({handleOnForm, onSubmit} : NoteFormProps) => {
       <option value="Meeting">Meeting</option>
       <option value="Shopping">Shopping</option>
     </Field>
-    <span id="tag-error" className={css.error} />
+    <ErrorMessage name="tag" component="span" className={css.error} />
   </div>
 
   <div className={css.actions}>
-    <button type="button" className={css.cancelButton} onClick={() => handleOnForm(false)}>
+    <button type="button" className={css.cancelButton} onClick={() => onClose()}>
       Cancel
     </button>
     <button
@@ -83,7 +94,6 @@ export const NoteForm = ({handleOnForm, onSubmit} : NoteFormProps) => {
     </button>
   </div>
 </Form>
-        </Modal>
         </Formik>      
      )
 }
