@@ -1,5 +1,5 @@
 import css from "./NoteForm.module.css"
-import { Field, Formik, Form, type FormikHelpers, ErrorMessage  } from "formik"
+import { Field, Formik, Form, ErrorMessage  } from "formik"
 import * as Yup from "yup";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { createNote } from "../../services/noteService";
@@ -41,11 +41,9 @@ export const NoteForm = ({onClose} : NoteFormProps) => {
         })
 
     const handleSubmit = (
-        values: NoteFormValues, 
-        action: FormikHelpers<NoteFormValues>
+        values: NoteFormValues,
     ) => {
         mutationCreate.mutate(values)
-        action.resetForm() 
     }
 
      return (

@@ -15,7 +15,7 @@ const App = () => {
     const[isForm, setForm]= useState<boolean>(false)
     const {data, isLoading, isError} = useQuery({
       queryKey: ["notes", page, searchValue ],
-      queryFn: () => fetchNotes( {page, searchValue}),
+      queryFn: () => fetchNotes( {page, search: searchValue}),
       placeholderData: keepPreviousData
     })
 
@@ -26,7 +26,7 @@ const App = () => {
       },
       400
     );
-    const values = data?.notes ?? []
+    const notes = data?.notes ?? []
     console.log(data)
 
     const onClose = (value: boolean) => {
@@ -40,13 +40,13 @@ const App = () => {
 		    {(data?.totalPages ?? 0) > 1 && <Pagination totalPages={data?.totalPages ?? 0} currentPage={page} onPageChange={setPage}/>}
 		    <button className={css.button} onClick={() => onClose(!isForm)}>Create note +</button>
       </header>
-       {values && <NoteList values={values} />}
+       {notes && <NoteList notes={notes} />}
        {isForm && 
         <Modal onClose={() => setForm(false)}>
           <NoteForm onClose={() => setForm(false)}/>
         </Modal>}
        {isLoading && <h3>Content is loading</h3>}
-       {isError && <h3>Ошибкеа пиздец</h3>}
+       {isError && <h3>..Ops</h3>}
        
     </div>
   )

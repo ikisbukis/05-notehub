@@ -4,9 +4,9 @@ import { useQueryClient, useMutation } from "@tanstack/react-query"
 import { deleteNote } from "../../services/noteService"
 
 interface NoteListProps{
-  values: Note[]
+  notes: Note[]
 }
-export const NoteList = ({values}: NoteListProps) => {
+export const NoteList = ({notes}: NoteListProps) => {
 
     const queryClient =  useQueryClient();
     
@@ -20,7 +20,7 @@ export const NoteList = ({values}: NoteListProps) => {
 
     return (
         <ul className={css.list}>
-          {values.map(value => (
+          {notes.map(value => (
               <li key={value.id} className={css.listItem}>
               <h2 className={css.title}>{value.title}</h2>
                 <p className={css.content}>{value.content}</p>
