@@ -3,7 +3,7 @@ import type { Note, CreateNoteType} from '../types/note';
 
 interface FetchNotesParams{
     page: number
-    search: string
+    search?: string
 }
 
 interface FetchNotesParamsHttpResponse{
@@ -20,7 +20,7 @@ const options = {
 }
 
 export const fetchNotes = async ({page, search}: FetchNotesParams) : Promise<FetchNotesParamsHttpResponse> => {
-    const response = await axios.get<FetchNotesParamsHttpResponse>("https://notehub-public.goit.study/api/notes", {...options, params: {page: page, search: search}}  )
+    const response = await axios.get<FetchNotesParamsHttpResponse>("https://notehub-public.goit.study/api/notes", {...options, params: {page: page, ...(search ? {search} : {}) }}  )
     return response.data
     
 }
