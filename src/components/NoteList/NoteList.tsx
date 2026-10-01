@@ -26,7 +26,7 @@ export const NoteList = ({notes}: NoteListProps) => {
                 <p className={css.content}>{value.content}</p>
                   <div className={css.footer}>
                   <span className={css.tag}>{value.tag}</span>
-                  <button onClick={() => mutationDelete.mutate({id: value.id})} className={css.button}>Delete</button>
+                  <button onClick={() => mutationDelete.mutate(value.id)} className={css.button}>Delete</button>
                 </div>
               </li>    
               )

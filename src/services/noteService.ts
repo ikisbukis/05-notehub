@@ -6,10 +6,6 @@ interface FetchNotesParams{
     search: string
 }
 
-interface DeleteNoteParams{
-    id: string
-}
-
 interface FetchNotesParamsHttpResponse{
     notes: Note[]
     totalPages: number;
@@ -34,7 +30,7 @@ export const createNote = async ( {title, content, tag} : CreateNoteType) : Prom
     return response.data
 }
 
-export const deleteNote = async ({id, } : DeleteNoteParams) : Promise<Note> => {
+export const deleteNote = async (id: string) : Promise<Note> => {
     const response = await axios.delete<Note>(`https://notehub-public.goit.study/api/notes/${id}`, options)
     return response.data
 }
